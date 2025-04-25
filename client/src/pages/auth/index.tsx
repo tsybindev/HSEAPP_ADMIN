@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Image from 'next/image'
+import Head from 'next/head'
 
 const Index = () => {
 	const router = useRouter()
@@ -108,74 +109,79 @@ const Index = () => {
 	}
 
 	return (
-		<div className='flex w-full items-center justify-center h-screen'>
-			<Card className='w-1/4'>
-				<CardHeader>
-					<Image
-						src={'static/logo.svg'}
-						alt={'HSE'}
-						width={48}
-						height={48}
-						quality={100}
-						className={'mx-auto'}
-					/>
-					<CardTitle className='text-2xl w-full text-center'>
-						Авторизация
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<Form {...methods}>
-						<form
-							onSubmit={methods.handleSubmit(onSubmit)}
-							className='grid gap-4'
-						>
-							<FormField
-								control={methods.control}
-								name='email'
-								render={({ field }) => (
-									<FormItem className='grid gap-2'>
-										<FormLabel>Email</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												onChange={e => field.onChange(e.target.value)}
-												type={'email'}
-												placeholder={'m@example.com'}
-												required
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+		<>
+			<Head>
+				<title>HSE -Авторизация</title>
+			</Head>
+			<div className='flex w-full items-center justify-center h-screen'>
+				<Card className='w-1/4'>
+					<CardHeader>
+						<Image
+							src={'static/logo.svg'}
+							alt={'HSE'}
+							width={48}
+							height={48}
+							quality={100}
+							className={'mx-auto'}
+						/>
+						<CardTitle className='text-2xl w-full text-center'>
+							Авторизация
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Form {...methods}>
+							<form
+								onSubmit={methods.handleSubmit(onSubmit)}
+								className='grid gap-4'
+							>
+								<FormField
+									control={methods.control}
+									name='email'
+									render={({ field }) => (
+										<FormItem className='grid gap-2'>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													onChange={e => field.onChange(e.target.value)}
+													type={'email'}
+													placeholder={'m@example.com'}
+													required
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-							<FormField
-								control={methods.control}
-								name='password'
-								render={({ field }) => (
-									<FormItem className='grid gap-2'>
-										<FormLabel>Пароль</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												onChange={e => field.onChange(e.target.value)}
-												type={'password'}
-												placeholder={'**********'}
-												required
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<Button type='submit' className='w-full'>
-								Авторизоваться
-							</Button>
-						</form>
-					</Form>
-				</CardContent>
-			</Card>
-		</div>
+								<FormField
+									control={methods.control}
+									name='password'
+									render={({ field }) => (
+										<FormItem className='grid gap-2'>
+											<FormLabel>Пароль</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													onChange={e => field.onChange(e.target.value)}
+													type={'password'}
+													placeholder={'**********'}
+													required
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<Button type='submit' className='w-full'>
+									Авторизоваться
+								</Button>
+							</form>
+						</Form>
+					</CardContent>
+				</Card>
+			</div>
+		</>
 	)
 }
 

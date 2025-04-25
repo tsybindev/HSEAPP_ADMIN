@@ -1,32 +1,39 @@
 //@ts-ignore
 //@ts-nocheck
 
-import {User} from "@/lib/types/User";
-import {makeAutoObservable} from "mobx";
-import Cookies from "js-cookie";
-import {getMe} from "@/lib/api/User";
-
+import { User } from '@/lib/types/User'
+import { makeAutoObservable } from 'mobx'
+import Cookies from 'js-cookie'
+import { getMe } from '@/lib/api/User'
 
 class StoreUser {
-    isLoad = true
-    user: User | null = null
+	isLoad = true
+	user: User | null = null
 
-    constructor() {
-        makeAutoObservable(this)
-    }
+	constructor() {
+		makeAutoObservable(this, {
+			setUser: true,
+		})
+	}
 
-    async loading() {
-        const user_id = Cookies.get('user_id')
-        const token = Cookies.get('users_access_token')
-        this.isLoad = true
-        try {
-            this.user = await getMe(user_id, token)
-            this.isLoad = false
-        } catch (e) {
-            console.log(e)
-            this.isLoad = false
-        }
-    }
+	async loading() {
+		const user_id = Cookies.get('user_id')
+		const token = Cookies.get('users_access_token')
+		this.isLoad = true
+		try {
+			const data = await getMe(user_id, token)
+			this.setUser(data)
+			this.isLoad = false
+		} catch (e) {
+			console.log(e)
+			this.isLoad = false
+		}
+	}
+
+	setUser(data: User) {
+		this.user = data
+	}
 }
 
-export default new StoreUser()
+const storeUser = new StoreUser()
+export default storeUser

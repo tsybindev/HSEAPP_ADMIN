@@ -22,7 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			const cookies = parseCookies()
 			const authToken = cookies.users_access_token
 
-			const publicPage = ['/auth', '/register']
+			const publicPage = ['/auth']
 			const isPublicPage = publicPage.includes(router.pathname)
 
 			if (!authToken && !isPublicPage) {

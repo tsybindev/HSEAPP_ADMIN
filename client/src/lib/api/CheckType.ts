@@ -1,17 +1,33 @@
-import API from "../../../axiosConfig";
+import API from '../../../axiosConfig'
+import { parseCookies } from 'nookies'
 
-export async function checkType(type: string, item_id: string) {
-    try {
-        const response = await API.get(`/${type}/${item_id}/is_exist/`, {
-            validateStatus: (status) => status === 200 || status === 404, // Указываем, что 404 тоже приемлем
-        });
+export async function checkType(type: string, item_id: string, context?: any) {
+	try {
+		let token
+		if (context?.req) {
+			// На сервере
+			token = context.req.cookies?.users_access_token
+		} else {
+			// На клиенте
+			const cookies = parseCookies(context)
+			token = cookies.users_access_token
+		}
 
-        // Если статус 200, возвращаем true, иначе null
-        if (response.status === 200) {
-            return { item_id: item_id }; // Создаем фейковый объект курса
-        }
-        return null;
-    } catch (error) {
-        throw error;
-    }
+		if (!token) {
+			throw new Error('No token found')
+		}
+		console.log('url:', `/${type}s/${item_id}/`)
+		const response = await API.get(`/${type}s/${item_id}/`, {
+			validateStatus: status => status >= 200 && status < 500,
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		})
+
+		return response.status === 200 ? response.data : null
+	} catch (error) {
+		console.error('Error in checkType:', error)
+		throw error
+	}
 }
