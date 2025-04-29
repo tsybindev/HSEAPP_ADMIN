@@ -151,7 +151,7 @@ const AttemptsPage = observer(() => {
 	return (
 		<>
 			<Head>
-				<title>HSE - Попытки</title>
+				<title>HSE - Результаты фотофиксации</title>
 			</Head>
 			<SidebarProvider>
 				<AppSidebar />
