@@ -1,7 +1,7 @@
 //@ts-ignore
 //@ts-nocheck
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { observer } from 'mobx-react'
 import { checkType } from '@/lib/api/CheckType'
 import {
@@ -85,6 +85,7 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import AddAsk from '@/components/elements/AddAsk'
+import ImportAsks from '@/components/elements/ImportAsks'
 
 const Module = observer(({ module }) => {
 	const token = Cookies.get('users_access_token')
@@ -228,18 +229,18 @@ const Module = observer(({ module }) => {
 
 	const [asks, setAsks] = useState<Asks[]>([])
 
-	useEffect(() => {
-		const fetchAsks = async () => {
-			try {
-				const response = await getAsks(token, moduleId) // Ожидаем завершения запроса
-				setAsks(response) // Устанавливаем данные
-			} catch (e) {
-				console.error('Ошибка при загрузке модулей:', e) // Логируем ошибку
-			}
+	const fetchAsks = useCallback(async () => {
+		try {
+			const response = await getAsks(token, moduleId)
+			setAsks(response)
+		} catch (e) {
+			console.error('Ошибка при загрузке вопросов:', e)
 		}
+	}, [token, moduleId])
 
-		fetchAsks() // Вызываем асинхронную функцию
-	}, [token, moduleId]) // Данные изменятся только при изменении token или courseId
+	useEffect(() => {
+		fetchAsks()
+	}, [fetchAsks])
 
 	return (
 		<>
@@ -472,6 +473,7 @@ const Module = observer(({ module }) => {
 									</Accordion>
 
 									<AddAsk module_id={moduleId} />
+									<ImportAsks module_id={moduleId} onSuccess={fetchAsks} />
 								</div>
 							</div>
 						</div>
