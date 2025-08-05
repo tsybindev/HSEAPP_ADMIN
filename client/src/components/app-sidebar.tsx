@@ -32,6 +32,7 @@ import {
 	SidebarRail,
 } from '@/components/ui/sidebar'
 import AddCourse from '@/components/elements/AddCourse'
+import ImportUsers from '@/components/elements/ImportUsers'
 import { Separator } from '@/components/ui/separator'
 import {
 	Catalog,
@@ -88,9 +89,13 @@ export const AppSidebar = observer(
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
+							<SidebarMenuItem className='mb-2'>
+								<AddCourse />
+							</SidebarMenuItem>
+							<SidebarMenuItem className='mb-2'>
+								<ImportUsers />
+							</SidebarMenuItem>
 						</SidebarMenu>
-
-						<AddCourse />
 
 						<SidebarGroupLabel className={'mt-2'}>
 							Список программ
