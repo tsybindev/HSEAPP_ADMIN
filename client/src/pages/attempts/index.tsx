@@ -197,6 +197,23 @@ const AttemptsPage = observer(() => {
 									courses={storeAttempts.userCourses}
 									checkedAttempts={checkedAttempts}
 									onToggle={handleToggleAttempt}
+									onDeleteAttempt={async attemptId => {
+										const toastId = toast.loading('Аннулирование экзамена...')
+										try {
+											await storeAttempts.deleteAttempt(attemptId)
+											toast.success('Экзамен успешно аннулирован', {
+												id: toastId,
+												duration: 5000,
+												richColors: true,
+											})
+										} catch (error) {
+											toast.error('Не удалось аннулировать экзамен', {
+												id: toastId,
+												duration: 5000,
+												richColors: true,
+											})
+										}
+									}}
 								/>
 							)}
 							{!selectedUser && (

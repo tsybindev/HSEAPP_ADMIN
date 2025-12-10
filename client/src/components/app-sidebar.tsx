@@ -45,76 +45,111 @@ import StoreCatalog from '@/lib/store/storeCatalog'
 import { observer } from 'mobx-react'
 import CatalogElement from '@/components/elements/CatalogElement'
 import Link from 'next/link'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export const AppSidebar = observer(
 	({ ...props }: React.ComponentProps<typeof Sidebar>) => {
 		const data = StoreCatalog.catalog
 
 		return (
-			<Sidebar {...props}>
-				<SidebarContent>
-					<SidebarGroup>
-						<div className={'flex flex-row gap-4 my-2'}>
-							<Image
-								src={'/static/logo.svg'}
-								alt={'HSE'}
-								width={48}
-								height={48}
-								quality={100}
-							/>
-							<div className={'flex flex-col gap-0'}>
-								<p className={'text-xl text-primary font-bold leading-none'}>
-									HSE
-								</p>
-								<p className={'text-md text-primary leading-none'}>Эксперт</p>
-								<p className={'text-sm text-gray-400 leading-none'}>
-									Без травм и аварий
-								</p>
+			<TooltipProvider>
+				<Sidebar {...props}>
+					<SidebarContent>
+						<SidebarGroup>
+							<div className={'flex flex-row gap-4 my-2'}>
+								<Image
+									src={'/static/logo.svg'}
+									alt={'HSE'}
+									width={48}
+									height={48}
+									quality={100}
+								/>
+								<div className={'flex flex-col gap-0'}>
+									<p className={'text-xl text-primary font-bold leading-none'}>
+										HSE
+									</p>
+									<p className={'text-md text-primary leading-none'}>Эксперт</p>
+									<p className={'text-sm text-gray-400 leading-none'}>
+										Без травм и аварий
+									</p>
+								</div>
 							</div>
-						</div>
-					</SidebarGroup>
+						</SidebarGroup>
 
-					<Separator />
+						<Separator />
 
-					<SidebarGroup className={'mt-2'}>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link
-										href='/attempts'
-										className='w-full mb-4 flex items-center justify-center border border-border hover:bg-gray-200 rounded-md py-1.5'
-									>
-										<Camera className='mr-2 h-4 w-4' />
-										Фотофиксация
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem className='mb-2'>
-								<AddCourse />
-							</SidebarMenuItem>
-							<SidebarMenuItem className='mb-2'>
-								<ImportUsers />
-							</SidebarMenuItem>
-						</SidebarMenu>
-
-						<SidebarGroupLabel className={'mt-2'}>
-							Список программ
-						</SidebarGroupLabel>
-						<SidebarGroupContent>
+						<SidebarGroup className={'mt-2'}>
 							<SidebarMenu>
-								{data?.map(catalog => (
-									<CatalogElement
-										key={catalog.item_id}
-										title={catalog.title}
-										item_id={catalog.item_id}
-									/>
-								))}
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<SidebarMenuItem>
+											<SidebarMenuButton asChild>
+												<Link
+													href='/attempts'
+													className='w-full mb-4 flex items-center justify-center border border-border hover:bg-gray-200 rounded-md py-1.5'
+												>
+													<Camera className='mr-2 h-4 w-4' />
+													Фотофиксация
+												</Link>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>
+											Раздел для проверки фотофиксации <br /> и аннулирования
+											экзаменаов
+										</p>
+									</TooltipContent>
+								</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<SidebarMenuItem className='mb-2'>
+											<AddCourse />
+										</SidebarMenuItem>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>
+											Создание нового курса, <br /> будет доступен в списке
+											программ
+										</p>
+									</TooltipContent>
+								</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<SidebarMenuItem className='mb-2'>
+											<ImportUsers />
+										</SidebarMenuItem>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Добавить группу пользователей из csv файла</p>
+									</TooltipContent>
+								</Tooltip>
 							</SidebarMenu>
-						</SidebarGroupContent>
-					</SidebarGroup>
-				</SidebarContent>
-				<SidebarRail />
-			</Sidebar>
+
+							<SidebarGroupLabel className={'mt-2'}>
+								Список программ
+							</SidebarGroupLabel>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									{data?.map(catalog => (
+										<CatalogElement
+											key={catalog.item_id}
+											title={catalog.title}
+											item_id={catalog.item_id}
+										/>
+									))}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+					</SidebarContent>
+					<SidebarRail />
+				</Sidebar>
+			</TooltipProvider>
 		)
 	}
 )
