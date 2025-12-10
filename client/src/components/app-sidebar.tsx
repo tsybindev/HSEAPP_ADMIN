@@ -99,7 +99,7 @@ export const AppSidebar = observer(
 											</SidebarMenuButton>
 										</SidebarMenuItem>
 									</TooltipTrigger>
-									<TooltipContent>
+									<TooltipContent side='right'>
 										<p>
 											Раздел для проверки фотофиксации <br /> и аннулирования
 											экзаменов
@@ -112,7 +112,7 @@ export const AppSidebar = observer(
 											<PassingPercentSettings />
 										</SidebarMenuItem>
 									</TooltipTrigger>
-									<TooltipContent>
+									<TooltipContent side='right'>
 										<p>Настроить проходной процент для экзамена</p>
 									</TooltipContent>
 								</Tooltip>
@@ -122,7 +122,7 @@ export const AppSidebar = observer(
 											<AddCourse />
 										</SidebarMenuItem>
 									</TooltipTrigger>
-									<TooltipContent>
+									<TooltipContent side='right'>
 										<p>
 											Создание нового курса, <br /> будет доступен в списке
 											программ
@@ -135,7 +135,7 @@ export const AppSidebar = observer(
 											<ImportUsers />
 										</SidebarMenuItem>
 									</TooltipTrigger>
-									<TooltipContent>
+									<TooltipContent side='right'>
 										<p>Добавить группу пользователей из csv файла</p>
 									</TooltipContent>
 								</Tooltip>
