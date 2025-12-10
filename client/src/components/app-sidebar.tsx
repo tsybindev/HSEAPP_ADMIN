@@ -25,7 +25,6 @@ import {
 	SidebarGroupContent,
 	SidebarGroupLabel,
 	SidebarMenu,
-	SidebarMenuBadge,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
@@ -51,6 +50,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
+import PassingPercentSettings from './elements/PassingPercentSettings'
 
 export const AppSidebar = observer(
 	({ ...props }: React.ComponentProps<typeof Sidebar>) => {
@@ -91,7 +91,7 @@ export const AppSidebar = observer(
 											<SidebarMenuButton asChild>
 												<Link
 													href='/attempts'
-													className='w-full mb-4 flex items-center justify-center border border-border hover:bg-gray-200 rounded-md py-1.5'
+													className='w-full mb-2 flex items-center text-sm justify-center border border-border hover:bg-gray-200 rounded-md py-1.5'
 												>
 													<Camera className='mr-2 h-4 w-4' />
 													Фотофиксация
@@ -102,8 +102,18 @@ export const AppSidebar = observer(
 									<TooltipContent>
 										<p>
 											Раздел для проверки фотофиксации <br /> и аннулирования
-											экзаменаов
+											экзаменов
 										</p>
+									</TooltipContent>
+								</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<SidebarMenuItem>
+											<PassingPercentSettings />
+										</SidebarMenuItem>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Настроить проходной процент для экзамена</p>
 									</TooltipContent>
 								</Tooltip>
 								<Tooltip>
