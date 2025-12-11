@@ -1,0 +1,154 @@
+import React, { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import { X } from 'lucide-react'
+import Cookies from 'js-cookie'
+import { createAsks } from '@/lib/api/Asks'
+import { AskImportSchema } from '@/lib/schemas/AskImportSchema'
+import StoreCatalog from '@/lib/store/storeCatalog'
+import Papa from 'papaparse'
+
+type ComponentProps = {
+	module_id: string
+	onSuccess?: () => void
+}
+
+const ImportAsks = ({ ...props }: ComponentProps) => {
+	const [isLoading, setIsLoading] = useState(false)
+	const fileInputRef = useRef<HTMLInputElement>(null)
+
+	const handleFileImport = async (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const file = event.target.files?.[0]
+		if (!file) {
+			return
+		}
+
+		setIsLoading(true)
+		const toastId = toast.loading('Импорт вопросов из файла...')
+
+		try {
+			const buffer = await file.arrayBuffer()
+			const decoder = new TextDecoder('windows-1251')
+			const text = decoder.decode(buffer)
+			Papa.parse(text, {
+				header: true,
+				skipEmptyLines: true,
+				delimiter: ';',
+				complete: async results => {
+					try {
+						const transformedData = results.data.map((row: any) => {
+							const answers = row.answers ? row.answers.split('|') : []
+							const correctAnswers = row.correct_answers
+								? row.correct_answers.split('|').map(Number)
+								: []
+
+							return {
+								title: row.question_title,
+								content: {},
+								is_input: false,
+								answers: answers.map((answerTitle: string, index: number) => ({
+									content: {},
+									title: answerTitle,
+									is_input: false,
+									is_true: correctAnswers.includes(index + 1),
+								})),
+							}
+						})
+
+						const validatedData = AskImportSchema.parse(transformedData)
+
+						// Если валидация прошла — отправляем на сервер
+						const token = Cookies.get('users_access_token')
+						if (!token) {
+							throw new Error('Токен не найден')
+						}
+						await createAsks(token, props.module_id, validatedData)
+						toast.success('Вопросы успешно импортированы!', {
+							id: toastId,
+							duration: 5000,
+							richColors: true,
+							action: (
+								<div className='absolute top-[10px] right-[10px]'>
+									<X
+										size={16}
+										className='hover:text-red-500 cursor-pointer transition-all duration-300 ease-in-out'
+										onClick={() => toast.dismiss()}
+									/>
+								</div>
+							),
+						})
+						StoreCatalog.loading().then()
+						if (props.onSuccess) props.onSuccess()
+					} catch (error) {
+						toast.error(
+							`Ошибка при обработке файла: ${
+								error instanceof Error ? error.message : 'Неизвестная ошибка'
+							}`,
+							{ id: toastId, duration: 5000, richColors: true }
+						)
+					} finally {
+						setIsLoading(false)
+						if (fileInputRef.current) {
+							fileInputRef.current.value = ''
+						}
+					}
+				},
+				error: (error: any) => {
+					toast.error(`Ошибка при парсинге CSV: ${error.message}`, {
+						id: toastId,
+						duration: 5000,
+						richColors: true,
+					})
+					setIsLoading(false)
+					if (fileInputRef.current) {
+						fileInputRef.current.value = ''
+					}
+				},
+			})
+		} catch (error) {
+			toast.error('Ошибка при импорте файла.', {
+				id: toastId,
+				duration: 5000,
+				richColors: true,
+				action: (
+					<div className='absolute top-[10px] right-[10px]'>
+						<X
+							size={16}
+							className='hover:text-red-500 cursor-pointer transition-all duration-300 ease-in-out'
+							onClick={() => toast.dismiss()}
+						/>
+					</div>
+				),
+			})
+			setIsLoading(false)
+			if (fileInputRef.current) {
+				fileInputRef.current.value = ''
+			}
+		}
+	}
+
+	return (
+		<div className='relative'>
+			<Input
+				ref={fileInputRef}
+				type='file'
+				accept='.csv'
+				onChange={handleFileImport}
+				className='hidden'
+				disabled={isLoading}
+			/>
+			<Button
+				className='w-full'
+				disabled={isLoading}
+				onClick={() => fileInputRef.current?.click()}
+			>
+				Импорт из файла
+			</Button>
+		</div>
+	)
+}
+
+export default ImportAsks
