@@ -63,7 +63,7 @@ class StoreAttempts {
 					attempts: course.exam.map(attempt => ({
 						id: attempt.item_id,
 						date: attempt.date_create,
-						is_completed: attempt.is_completed,
+						passed: attempt.passed,
 					})),
 				}))
 			)
@@ -89,9 +89,7 @@ class StoreAttempts {
 			this.setUserCourses(
 				this.userCourses.map(course => ({
 					...course,
-					attempts: course.attempts.filter(
-						attempt => attempt.id !== attemptId
-					),
+					attempts: course.attempts.filter(attempt => attempt.id !== attemptId),
 				}))
 			)
 		} catch (error) {
